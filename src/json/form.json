@@ -1,0 +1,57 @@
+[
+    {
+        "uid": "name",
+        "data_type": "string",
+        "label": "first Name",
+        "value": "test",
+        "_metadata": {
+            "required": true
+        }
+    },
+    {
+        "uid": "name1",
+        "data_type": "string",
+        "label": "Last Name",
+        "value": "test1",
+        "_metadata": {
+            "required": true
+        }
+    },
+    {
+        "uid": "age",
+        "data_type": "number",
+        "value": "28"
+    },
+    {
+        "uid": "group",
+        "data_type": "group",
+        "value": [
+            {
+                "uid": "name",
+                "data_type": "string",
+                "value": "grptest"
+            },
+            {
+                "uid": "group-1",
+                "data_type": "group",
+                "value": [
+                    {
+                        "uid": "name",
+                        "data_type": "string",
+                        "value": "grptest1"
+                    },
+                    {
+                        "uid": "age",
+                        "data_type": "number",
+                        "value": "28"
+                    }
+                ]
+            },
+            {
+                "uid": "age",
+                "data_type": "number",
+                "value": "28"
+            }
+        ]
+    }
+]

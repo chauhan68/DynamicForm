@@ -1,0 +1,42 @@
+.container.group-container {
+    border: 2px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    margin: 0.5rem;
+    border-radius: 0.5rem;
+    padding: 0;
+}
+
+.group-accordian {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-weight: bold;
+    padding: 0.5rem;
+}
+
+.group-accordian.opened {
+    background-color: var(--open-group-background-color);
+}
+
+.accordian-button {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.group-fields-subcontainer {
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    margin: 1rem;
+}
+
+.show {
+    display: block;
+}
+
+.hide {
+    display: none;
+}

@@ -1,0 +1,35 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+}
+
+.error-state {
+  background-color: var(--error-color);
+  border-left: 4px solid var(--error-border-color);
+}
+
+.form-field {
+  padding: 0.5rem;
+  color: var(--font-color);
+  border-radius: 0.5rem;
+  border: 2px solid var(--border-color);
+  outline: 0;
+}
+
+.form-field:focus-visible,
+.form-field:focus {
+  border-color: var(--border-color-focus);
+}
+
+button[type='submit'] {
+  border-radius: 0.5rem;
+  border: 0;
+  padding: 1rem;
+  display: flex;
+  margin: auto;
+}
+
+button[type='submit']:hover {
+  background: filter(110%);
+}

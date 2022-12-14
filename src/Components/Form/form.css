@@ -1,0 +1,10 @@
+.reorder-icon {
+    position: absolute;
+    top: 50%;
+    left: -1rem;
+}
+
+.field-container {
+    margin-left: 2rem;
+    position: relative;
+}

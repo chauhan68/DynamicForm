@@ -1,0 +1,9 @@
+.label {
+    font-weight: bold;
+    padding-bottom: 0.5rem;
+}
+
+.label span{
+    font-weight: 400;
+    font-size: 0.75rem;
+}

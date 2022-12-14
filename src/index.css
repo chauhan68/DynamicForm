@@ -1,0 +1,18 @@
+html {
+    --font-color: #577080;
+    --border-color: #ededed;
+    --border-color-focus: #4d4d4d;
+    --error-color: rgb(252, 182, 182, 0.4);
+    --error-border-color: #d10e0e;
+    --open-group-background-color: #cef2f2;
+}
+
+body {
+    margin: 0;
+    font-family: sans-serif;
+    color: var(--font-color);
+}
+
+html {
+font-size: 16px;
+}
