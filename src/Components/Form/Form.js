@@ -22,7 +22,6 @@ const Form = (props) => {
     const { handleSubmit, formState: { errors } } = useForm();
     const [formData, updateFormData] = useState(props.form);
 
-    console.log('123')
     useEffect(() => {
         const updateObject = (formDataArray, currentObject) => {
             formDataArray.forEach((element) => {
@@ -79,7 +78,6 @@ const Form = (props) => {
                     return
                 }
                 if (objectValue.data_type === 'group') {
-                    console.log('Group', objectValue)
                     finalObject[key] = finalObject[key] || {};
                     validateObject(objectValue, finalObject[key]);
                 } else {
@@ -93,9 +91,10 @@ const Form = (props) => {
         };
 
         validateObject(current, submittedObject);
-        console.log('Data entered is:', submittedObject);
         if (hasError) {
             alert('This forms has errors');
+        } else {
+            console.log('Data entered is:', submittedObject);
         }
     }
 
