@@ -14,12 +14,14 @@
   color: var(--font-color);
   border-radius: 0.5rem;
   border: 2px solid var(--border-color);
+  box-shadow: 2px 2px 4px 0px var(--border-color);
   outline: 0;
 }
 
 .form-field:focus-visible,
 .form-field:focus {
   border-color: var(--border-color-focus);
+  box-shadow: 2px 2px 4px 0px var(--border-color-focus);
 }
 
 button[type='submit'] {
@@ -28,8 +30,13 @@ button[type='submit'] {
   padding: 1rem;
   display: flex;
   margin: auto;
+  background-color: var(--blue-background-color);
+  box-shadow: 2px 2px 2px 2px var(--button-shadow-color);
+  cursor: pointer;
+  margin-top: 1rem;
 }
 
 button[type='submit']:hover {
-  background: filter(110%);
+  filter: brightness(110%);
+  font-weight: bold;
 }

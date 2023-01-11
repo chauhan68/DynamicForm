@@ -1,7 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Label from '../Label/Label';
 
 const Input = (props) => {
+    const [value, setValue] = useState(props.value);
+
+    const updateValue = (event) => {
+        setValue(event.target.value);
+        props.register(props.uid, event.target.value);
+    }
+
     return (
         <div className={`input-wrapper container ${props.errors?.[props.uid]? 'error-state ': '' }`}>
             <Label for={props.uid} label={props.label} isRequired={props.isRequired} />
@@ -9,9 +16,9 @@ const Input = (props) => {
                 id={props.uid}
                 name={props.uid}
                 className='input-component form-field'
-                defaultValue={props.value}
+                value={value}
+                onChange={updateValue}
                 placeholder={props.placeholder}
-                {...props.register(props.uid, { required: props.isRequired, pattern: props.validationPattern })}
             />
         </div>
     )

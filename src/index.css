@@ -1,16 +1,20 @@
 html {
     --font-color: #577080;
     --border-color: #ededed;
-    --border-color-focus: #4d4d4d;
+    --border-color-focus: #6b6a6a;
     --error-color: rgb(252, 182, 182, 0.4);
     --error-border-color: #d10e0e;
     --open-group-background-color: #cef2f2;
+    --blue-background-color: #c9e3d8;
+    --button-shadow-color: #577080;
 }
 
 body {
     margin: 0;
     font-family: sans-serif;
     color: var(--font-color);
+    height: 100%;
+    width: 100%;
 }
 
 html {

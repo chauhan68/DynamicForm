@@ -1,3 +1,23 @@
+form {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    box-sizing: border-box;
+    box-shadow: 2px 5px 8px 8px var(--border-color);
+    border-radius: 1rem;
+}
+
+.main-wrapper {
+    box-sizing: border-box;
+    height: 100vh;
+    padding: 1rem;
+}
+
+.droppable-container {
+    flex: 1;
+}
+
 .reorder-icon {
     position: absolute;
     top: 50%;
@@ -7,4 +27,22 @@
 .field-container {
     margin-left: 2rem;
     position: relative;
+}
+
+.reorder-icon .dragging{
+    position: relative;
+    top: 50%;
+    left: -1rem;
+    height: 500px;
+    width: 500px;
+    background: blue;
+}
+
+.height-preserving-container {
+    min-height: calc(var(--child-height));
+    box-sizing: border-box;
+}
+
+.drop-shadow {
+    opacity: 0.5;
 }
