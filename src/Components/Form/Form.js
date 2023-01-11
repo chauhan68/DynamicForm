@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { useForm } from "react-hook-form";
 import { Virtuoso } from 'react-virtuoso'
 
 import EmptyForm from '../EmptyForm/EmptyForm';
@@ -19,8 +18,8 @@ window.addEventListener('error', (e) => {
 let current = {};
 
 const Form = (props) => {
-    const { handleSubmit, formState: { errors } } = useForm();
     const [formData, updateFormData] = useState(props.form);
+    const [errorData, updateErrorData] = useState({});
 
     useEffect(() => {
         const updateObject = (formDataArray, currentObject) => {
@@ -40,12 +39,14 @@ const Form = (props) => {
         }
 
         updateObject(formData, current);
-    }, []);
+    }, [formData]);
 
-    const register = (id, value) => {
+    const register = (id, value) => {   
         const keys = id.split('.');
         const updatedObject = structuredClone(current);
         let referenceObject = updatedObject;
+        let errorObject = structuredClone(errorData);
+        let errorReferenceObject = errorObject;
 
         let lastKey = ''
 
@@ -53,6 +54,7 @@ const Form = (props) => {
             referenceObject[key] = referenceObject[key] || {};
             lastKey = key;
             if (index !== keys.length - 1) {
+                errorReferenceObject = errorReferenceObject[key]
                 referenceObject = referenceObject[key]
             }
 
@@ -62,40 +64,45 @@ const Form = (props) => {
             const isValid = referenceObject[lastKey].pattern.test(value);
             const hasMinLength = referenceObject[lastKey].required ? value.length > 0 : true; 
             referenceObject[lastKey].error = !isValid && hasMinLength;
-            current = updatedObject;
-            return !isValid;
+            errorReferenceObject[lastKey] = referenceObject[lastKey].error;
         }
         current = updatedObject;
-        return false;
+        return Boolean(referenceObject[lastKey].error);
     }
 
-    const onSubmit = () => {
+    const onSubmit = (event) => {
+        event.preventDefault();
         const submittedObject = {};
+        const errorObject = {};
         let hasError = false;
-        const validateObject = (objectToValidate, finalObject) => {
+        const validateObject = (objectToValidate, finalObject, errorObject) => {
             Object.entries(objectToValidate).forEach(([key, objectValue]) => {
                 if (key === 'data_type') {
                     return
                 }
                 if (objectValue.data_type === 'group') {
                     finalObject[key] = finalObject[key] || {};
-                    validateObject(objectValue, finalObject[key]);
+                    errorObject[key] = errorObject[key] || {};
+                    validateObject(objectValue, finalObject[key], errorObject[key]);
                 } else {
                     const isValid = objectValue.pattern.test(objectValue.value);
                     const hasMinLength = objectValue.required ? objectValue.value.length > 0 : true; 
                     objectValue.error = !isValid || !hasMinLength;
                     finalObject[key] = objectValue.value;
+                    errorObject[key] = objectValue.error;
                     hasError = hasError || objectValue.error;
                 }
             })
         };
 
-        validateObject(current, submittedObject);
+        validateObject(current, submittedObject, errorObject);
         if (hasError) {
             alert('This forms has errors');
         } else {
             console.log('Data entered is:', submittedObject);
         }
+        console.log('Error Object', errorObject);
+        updateErrorData(errorObject);
     }
 
     const updateOrder = (startIndex, endIndex) => {
@@ -138,7 +145,7 @@ const Form = (props) => {
                                     &#9776;
                                 </span>
                             )}
-                            <FormFields currentElement={formData[index]} register={register} errors={errors} />
+                            <FormFields currentElement={formData[index]} register={register} errors={errorData} />
                         </div>
                     )
                 }
@@ -172,7 +179,7 @@ const Form = (props) => {
         }
 
         return (
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={onSubmit}>
                 <DragDropContext onDragEnd={onDragEnd}>
                     <Droppable
                         droppableId="droppable"
@@ -192,7 +199,7 @@ const Form = (props) => {
                                             &#9776;
                                         </span>
                                     )}
-                                    <FormFields currentElement={formData[rubric.source.index]} register={register} errors={errors} />
+                                    <FormFields currentElement={formData[rubric.source.index]} register={register} errors={errorData} />
                                 </div>
                             </div>
                         )}
@@ -212,7 +219,7 @@ const Form = (props) => {
                         )}
                     </Droppable>
                 </DragDropContext>
-                <button type='submit'>Submit</button>
+                <button type='submit' onSubmit={onSubmit}>Submit</button>
             </form >
         );
     };

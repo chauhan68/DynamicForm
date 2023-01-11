@@ -8,6 +8,23 @@ import Input from "../Input/Input";
 const FormFields = (props) => {
     const renderData = (currentElement) => {
         const { data_type, label, value, uid, _metadata = {} } = currentElement;
+
+        const hasError = (id) => {   
+            const keys = id.split('.');
+            const updatedObject = structuredClone(props.errors);
+            let referenceObject = updatedObject || {};
+    
+            let lastKey = ''
+            keys.forEach((key, index) => {
+                lastKey = key;
+                if (index !== keys.length - 1) {
+                    referenceObject[key] = referenceObject[key] ?? {};
+                    referenceObject = referenceObject[key]
+                } 
+            })
+            return Boolean(referenceObject[lastKey]);
+        }
+
         if (_metadata.hide) {
             return null
         } else if (data_type === 'group') {
@@ -27,7 +44,7 @@ const FormFields = (props) => {
                     label={label}
                     isRequired={_metadata.required}
                     register={props.register}
-                    errors={props.errors}
+                    errors={hasError(uid)}
                 />)
         } else if (data_type === 'dropdown') {
             return (
@@ -37,7 +54,7 @@ const FormFields = (props) => {
                     label={label}
                     isRequired={_metadata.required}
                     register={props.register}
-                    errors={props.errors}
+                    errors={hasError(uid)}
                 />)
         }
         return (
@@ -49,7 +66,7 @@ const FormFields = (props) => {
                 uid={uid}
                 isRequired={_metadata.required}
                 register={props.register}
-                errors={props.errors}
+                errors={hasError(uid)}
                 validationPattern={_metadata.regex}
             />
         );

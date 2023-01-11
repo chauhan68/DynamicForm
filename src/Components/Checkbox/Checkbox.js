@@ -12,7 +12,7 @@ const Checkbox = (props) => {
     }
 
     return (
-        <div className={`checkbox-wrapper container ${props.errors?.[props.uid]? 'error-state ': '' }`}>
+        <div className={`checkbox-wrapper container ${props.errors? 'error-state ': '' }`}>
             <input
                 type="checkbox"
                 id={props.uid} 
