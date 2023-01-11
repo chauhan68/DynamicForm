@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { Virtuoso } from 'react-virtuoso'
 
@@ -15,59 +15,44 @@ window.addEventListener('error', (e) => {
     }
 })
 
-let current = {};
-
 const Form = (props) => {
     const [formData, updateFormData] = useState(props.form);
     const [errorData, updateErrorData] = useState({});
 
-    useEffect(() => {
-        const updateObject = (formDataArray, currentObject) => {
-            formDataArray.forEach((element) => {
-                const { data_type, value, uid, _metadata = {} } = element;
-                if (data_type === 'group') {
-                    currentObject[uid] = currentObject[uid] || {};
-                    currentObject[uid].data_type = 'group';
-                    updateObject(value, currentObject[uid]);
-                } else {
-                    currentObject[uid] = currentObject[uid] || {};
-                    currentObject[uid].value = value;
-                    currentObject[uid].required = Boolean(_metadata.required);
-                    currentObject[uid].pattern = new RegExp(_metadata.pattern ?? '.*');
-                }
-            })
-        }
-
-        updateObject(formData, current);
-    }, [formData]);
-
-    const register = (id, value) => {   
+    const register = (id, newValue) => {
         const keys = id.split('.');
-        const updatedObject = structuredClone(current);
+        const updatedObject = structuredClone(formData);
         let referenceObject = updatedObject;
         let errorObject = structuredClone(errorData);
         let errorReferenceObject = errorObject;
+        let hasError = false;
 
-        let lastKey = ''
-
-        keys.forEach((key, index) => {
-            referenceObject[key] = referenceObject[key] || {};
-            lastKey = key;
-            if (index !== keys.length - 1) {
-                errorReferenceObject = errorReferenceObject[key]
-                referenceObject = referenceObject[key]
+        keys.forEach((key) => {
+            let element = referenceObject;
+            if (Array.isArray(referenceObject)) {
+                element = referenceObject.find((obj) => obj.uid === key);
             }
-
+            if (!element) {
+                return
+            }
+            const { data_type, uid, _metadata = {} } = element;
+            if (data_type === 'group') {
+                errorReferenceObject[uid] = errorReferenceObject[uid] || {};
+                referenceObject = element;
+                errorReferenceObject = errorReferenceObject[uid];
+            } else {
+                element.value = newValue;
+                const isRequired = Boolean(_metadata.required);
+                const pattern = new RegExp(_metadata.pattern ?? '.*');
+                const isValid = pattern.test(newValue);
+                const hasMinLength = isRequired ? newValue.length > 0 : true;
+                errorReferenceObject[uid] = !isValid || !hasMinLength;
+                hasError = errorReferenceObject[uid];
+            }
         })
-        referenceObject[lastKey].value = value;
-        if (referenceObject[lastKey].error) {
-            const isValid = referenceObject[lastKey].pattern.test(value);
-            const hasMinLength = referenceObject[lastKey].required ? value.length > 0 : true; 
-            referenceObject[lastKey].error = !isValid && hasMinLength;
-            errorReferenceObject[lastKey] = referenceObject[lastKey].error;
-        }
-        current = updatedObject;
-        return Boolean(referenceObject[lastKey].error);
+        updateFormData(updatedObject);
+        updateErrorData(errorObject);
+        return Boolean(hasError);
     }
 
     const onSubmit = (event) => {
@@ -75,27 +60,27 @@ const Form = (props) => {
         const submittedObject = {};
         const errorObject = {};
         let hasError = false;
-        const validateObject = (objectToValidate, finalObject, errorObject) => {
-            Object.entries(objectToValidate).forEach(([key, objectValue]) => {
-                if (key === 'data_type') {
-                    return
-                }
-                if (objectValue.data_type === 'group') {
-                    finalObject[key] = finalObject[key] || {};
-                    errorObject[key] = errorObject[key] || {};
-                    validateObject(objectValue, finalObject[key], errorObject[key]);
+
+        const updateObject = (formDataArray, currentObject, errorObj) => {
+            formDataArray.forEach((element) => {
+                const { data_type, value, uid, _metadata = {} } = element;
+                if (data_type === 'group') {
+                    currentObject[uid] = currentObject[uid] || {};
+                    errorObj[uid] = errorObj[uid] || {};
+                    updateObject(value, currentObject[uid], errorObj[uid]);
                 } else {
-                    const isValid = objectValue.pattern.test(objectValue.value);
-                    const hasMinLength = objectValue.required ? objectValue.value.length > 0 : true; 
-                    objectValue.error = !isValid || !hasMinLength;
-                    finalObject[key] = objectValue.value;
-                    errorObject[key] = objectValue.error;
-                    hasError = hasError || objectValue.error;
+                    currentObject[uid] = value;
+                    const isRequired = Boolean(_metadata.required);
+                    const pattern = new RegExp(_metadata.pattern ?? '.*');
+                    const isValid = pattern.test(value);
+                    const hasMinLength = isRequired ? value.length > 0 : true;
+                    errorObj[uid] = !isValid || !hasMinLength;
+                    hasError = hasError || errorObj[uid];
                 }
             })
-        };
+        }
 
-        validateObject(current, submittedObject, errorObject);
+        updateObject(formData, submittedObject, errorObject);
         if (hasError) {
             alert('This forms has errors');
         } else {

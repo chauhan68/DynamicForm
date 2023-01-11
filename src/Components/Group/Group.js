@@ -12,7 +12,7 @@ const Group = (props) => {
     const renderData = (currentElement) => {
         const clonedData = JSON.parse(JSON.stringify(currentElement));
         clonedData.uid = `${props.id}.${currentElement.uid}`
-        return (<FormFields key={clonedData.uid} currentElement={clonedData} register={props.register}/>)
+        return (<FormFields key={clonedData.uid} currentElement={clonedData} register={props.register} errors={props.errors}/>)
     }
 
     return (
